@@ -33,7 +33,7 @@ pool.getConnection((err, connection) => {
 
 router.get('/:id', async function(req,res){
     try {
-        const sqlQuery = 'SELECT name, id FROM nadoume WHERE id=?';
+        const sqlQuery = 'SELECT fordays.mera, fordays.hours FROM fordays JOIN nadoume ON nadoume.id = fordays.id WHERE fordays.id = ?';
         const rows = await pool.query(sqlQuery, req.params.id);
         res.status(200).json(rows);
     } catch (error) {
@@ -42,6 +42,34 @@ router.get('/:id', async function(req,res){
 
 
     // res.status(200).json({id:req.params.id})
+});
+
+router.get('/name/:name', async function(req,res){
+    try {
+        const sqlQuery = 'SELECT fordays.mera, fordays.hours FROM fordays JOIN nadoume ON nadoume.id = fordays.id WHERE nadoume.name = ?';
+        const rows = await pool.query(sqlQuery, req.params.name);
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
+
+
+    // res.status(200).json({id:req.params.id})
+});
+
+router.post('/register', async function(req,res) {
+    try {
+        const {mera, id, hours} = req.body;
+        
+        //let date = new Date();
+
+        const sqlQuery = 'INSERT INTO `fordays` (`mera`, `id`, `hours`) VALUES (?, ?, ?)';
+        const result = await pool.query(sqlQuery, [mera, id, hours]);
+
+        res.status(200).json({userid: id});
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
 });
 
 
