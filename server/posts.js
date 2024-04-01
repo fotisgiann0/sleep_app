@@ -5,6 +5,10 @@ router.get("/", (req, res) => {
     res.json("hello")
 })
 
+router.get("/test", (req, res) => {
+    res.json("hello")
+})
+
 const mariadb = require('mariadb')
 const pool = mariadb.createPool({
     host: 'localhost',
@@ -33,7 +37,7 @@ pool.getConnection((err, connection) => {
 
 router.get('/:id', async function(req,res){
     try {
-        const sqlQuery = 'SELECT fordays.mera, fordays.hours FROM fordays JOIN nadoume ON nadoume.id = fordays.id WHERE fordays.id = ?';
+        const sqlQuery = 'SELECT fordays.mera, fordays.hours, nadoume.name FROM fordays, nadoume WHERE nadoume.id = fordays.id AND fordays.id = ?';
         const rows = await pool.query(sqlQuery, req.params.id);
         res.status(200).json(rows);
     } catch (error) {
